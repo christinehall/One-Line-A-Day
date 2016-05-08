@@ -13,7 +13,6 @@ class EditView: UIView {
     
     var w: CGFloat!
     var h: CGFloat!
-
     var textField: UITextView!
     
     override init (frame : CGRect) {
@@ -34,12 +33,13 @@ class EditView: UIView {
     
     func setupUIElements() {
         textField = UITextView(frame: CGRectMake(10,10,w-20,h-20))
-        textField.font = UIFont(name: "Gotham-Medium", size: 18)
+        textField.font = UIFont(name: "Gotham-Medium", size: 35)
+        textField.textColor = UIColor(red: 52/255.0, green: 152/255.0, blue: 219/255.0, alpha: 1.0)
         textField.backgroundColor = UIColor.clearColor()
         addSubview(textField)
     }
     
-    private func addUIBlur(style: UIBlurEffectStyle = UIBlurEffectStyle.Light) {
+    private func addUIBlur(style: UIBlurEffectStyle = UIBlurEffectStyle.ExtraLight) {
         let blur = UIVisualEffectView(effect: UIBlurEffect(style: style))
         blur.frame = self.bounds
         blur.userInteractionEnabled = false //This allows touches to forward to the button.
@@ -47,13 +47,16 @@ class EditView: UIView {
         
     }
     
-    func show() {
+    func show(lineText: String) {
         alpha = 0.0
         hidden = false
 
         UIView.animateWithDuration(0.3) {
             self.alpha = 1.0
         }
+        
+        textField.text = lineText
+        textField.becomeFirstResponder()
     }
     
     func hide() {
@@ -66,6 +69,7 @@ class EditView: UIView {
                     self.hidden = true
                 }
         })
+        textField.resignFirstResponder()
     }
     
 }

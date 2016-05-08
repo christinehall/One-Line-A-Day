@@ -56,9 +56,10 @@ class NavigationView: UIView {
         fatalError("This class does not support NSCoding")
     }
     
-    func displayButtons(show: Bool = false, buttons: [UIButton]) {
+    func displayButtons(show: Bool = true, buttons: [UIButton]) {
+        print("We are hiding the buttons: \(!show)")
         for button in buttons {
-            button.hidden = !hidden
+            button.hidden = !show
         }
     }
 

@@ -9,13 +9,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "OLAD/LineCell.swift"
-            timestampString = "484410628.753884"
+            filePath = "OLAD/Courier.swift"
+            timestampString = "484417367.269484"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "98"
-            endingLineNumber = "98"
-            landmarkName = "edit()"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
+            landmarkName = "saveEntryForDate(_:line:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -25,29 +25,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "OLAD/MainViewController.swift"
-            timestampString = "484412138.505705"
+            filePath = "OLAD/Courier.swift"
+            timestampString = "484417367.269484"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "279"
-            endingLineNumber = "279"
-            landmarkName = "clickedEdit()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "OLAD/EditView.swift"
-            timestampString = "484412138.505705"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "52"
-            endingLineNumber = "52"
-            landmarkName = "show()"
+            startingLineNumber = "95"
+            endingLineNumber = "95"
+            landmarkName = "saveEntryForDate(_:line:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

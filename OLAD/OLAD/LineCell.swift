@@ -19,8 +19,7 @@ class LineCell: UITableViewCell {
     
     // all elements in the cell itself
     var yearLabel: UILabel!
-    var line: UILabel!
-    var editLine: UITextView!
+    var line: UITextView!
     var editButton: UIButton!
     
     var cellHeight: CGFloat!
@@ -47,26 +46,26 @@ class LineCell: UITableViewCell {
         self.addSubview(container)
         
         // year label
-        yearLabel = UILabel(frame: CGRectMake(5,5,w-10,50))
+        yearLabel = UILabel(frame: CGRectMake(5,10,w-10,30))
         yearLabel.textColor = UIColor.darkGrayColor()
         yearLabel.font = UIFont(name: "Gotham-Bold", size: 20)
         yearLabel.textAlignment = .Left
         
-        line = UILabel(frame: CGRectMake(10,50,w-20,50))
-        line.textColor = UIColor.darkGrayColor()
+        line = UITextView(frame: CGRectMake(5,35,w-10,50))
+        line.font = UIFont(name: "Gotham-Medium", size: 14)
         line.textAlignment = .Left
-        line.numberOfLines = 0
-        
-        editLine = UITextView(frame: CGRectMake(10,50,w-20,50))
-        editLine.hidden = true
+        line.backgroundColor = UIColor.clearColor()
+        line.editable = false
         
         editButton = UIButton(frame:CGRectMake(w-50, cellHeight - 40, 40,30))
         editButton.setTitle("Edit", forState: .Normal)
+        editButton.titleLabel!.font = UIFont(name: "Gotham-Light", size: 13)
+        editButton.alpha = 0.8
         editButton.addTarget(self, action: #selector(LineCell.edit), forControlEvents: .TouchUpInside)
         editButton.hidden = true
         
         // add them all to the container
-        let viewsInContainer = [yearLabel, line, editLine, editButton]
+        let viewsInContainer = [yearLabel, line, editButton]
         for thisView in viewsInContainer {
             container.addSubview(thisView)
         }
@@ -95,20 +94,29 @@ class LineCell: UITableViewCell {
     }
     
     func edit() {
-        parentViewController.clickedEdit() 
+        parentViewController.clickedEdit(line.text!)
+    }
+    
+    func setDayCell() {
+        container.backgroundColor = UIColor.whiteColor()
+        yearLabel.textColor = UIColor.darkGrayColor()
+        line.textColor = UIColor.darkGrayColor()
+        editButton.setTitleColor(UIColor(red: 52/255.0, green: 152/255.0, blue: 219/255.0, alpha: 1.0), forState: .Normal)
     }
     
     func setTodaysCell() {
         container.backgroundColor = UIColor(red: 52/255.0, green: 152/255.0, blue: 219/255.0, alpha: 1.0)
         yearLabel.textColor = UIColor.whiteColor()
         line.textColor = UIColor.whiteColor()
+        editButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+
     }
     
     func clear() {
         container.backgroundColor = UIColor.clearColor()
+        
         yearLabel.text = ""
         line.text = ""
         editButton.hidden = true
-        
     }
 }

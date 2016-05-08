@@ -23,6 +23,10 @@ class Entry {
         self.date = date
     }
     
+    func save() {
+        Courier.getCourier().saveEntryForDate(self.date, line: self.line)
+    }
+    
 }
 
 class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -74,7 +78,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         dateHeader.centerButton.addTarget(self, action: #selector(MainViewController.goToToday), forControlEvents: .TouchUpInside)
         dateHeader.rightButton.setImage(UIImage(named: "forward_button"), forState: .Normal)
         dateHeader.rightButton.addTarget(self, action: #selector(MainViewController.forwardOneDay), forControlEvents: .TouchUpInside)
-
+        dateHeader.rightButton.hidden = shouldHideForwardButton()
+        
         // tableview
         lineTable = UITableView(frame: CGRectMake(0,65,w,h-65))
         lineTable.backgroundColor = secondaryColor
@@ -99,6 +104,13 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
+    func shouldHideForwardButton() -> Bool {
+        if dateTracker >= 0 {
+            return true
+        }
+        return false
+    }
+    
     func setElementsByDate(dayNum: Int) {
         todaysEntries.removeAll()
         
@@ -113,7 +125,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         let fetchedEntries = Courier.getCourier().fetchEntriesForDate(date)
         for entry in fetchedEntries {
-            todaysEntries.append(Entry(obj: entry))
+            let entryObj = Entry(obj: entry)
+            todaysEntries.append(entryObj)
         }
         
         
@@ -125,7 +138,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 }
             }
             if found == false {
-                todaysEntries.append(Entry(date: date))
                 todaysEntries.append(Entry(date: date))
             }
         }
@@ -165,10 +177,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell.parentViewController = self
             cell.yearLabel.text = getYearFromDate(entry.date)
             
-            // set the backgroundColor
-            cell.setBackgroundTo(UIColor.whiteColor())
+            
             if convertDateToShortString(entry.date) == convertDateToShortString(NSDate()) { // i.e., if this is today's update
                 cell.setTodaysCell()
+            } else {
+                cell.setDayCell()
             }
             
             if entry.line == nil {
@@ -185,10 +198,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         return cell!
     }
-    
-    func areSameDate(date1: NSDate, date2: NSDate) {
-        
-    }
+
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
@@ -244,7 +254,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         dateTracker = 0
         setElementsByDate(dateTracker)
-        
+        dateHeader.rightButton.hidden = shouldHideForwardButton()
         UIView.animateWithDuration(0.5) {
             self.lineTable.alpha = 1.0
         }
@@ -257,7 +267,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         dateTracker -= 1
         setElementsByDate(dateTracker)
-        
+        dateHeader.rightButton.hidden = shouldHideForwardButton()
         UIView.animateWithDuration(0.5) {
             self.lineTable.alpha = 1.0
         }
@@ -269,24 +279,53 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         dateTracker += 1
         setElementsByDate(dateTracker)
-        
+        dateHeader.rightButton.hidden = shouldHideForwardButton()
         UIView.animateWithDuration(0.5) {
             self.lineTable.alpha = 1.0
         }
     }
     
-    func clickedEdit() {
-        editView.show()
+    func clickedEdit(lineText: String) {
+        editView.show(lineText)
+        dateHeader.rightButton.removeTarget(nil, action: nil, forControlEvents: .AllEvents)
+
         dateHeader.displayButtons(false, buttons: [dateHeader.leftButton, dateHeader.centerButton])
-        dateHeader.rightButton.setImage(UIImage(named: "close"), forState: .Normal)
+        dateHeader.rightButton.hidden = false
+        dateHeader.rightButton.setImage(UIImage(named: "close_button"), forState: .Normal)
         dateHeader.rightButton.addTarget(self, action: #selector(MainViewController.closeEdit), forControlEvents: .TouchUpInside)
     }
     
     func closeEdit() {
+        saveLine()
+        
         editView.hide()
+        dateHeader.rightButton.removeTarget(nil, action: nil, forControlEvents: .AllEvents)
+
         dateHeader.displayButtons(true, buttons: [dateHeader.leftButton, dateHeader.centerButton])
         dateHeader.rightButton.setImage(UIImage(named: "forward_button"), forState: .Normal)
         dateHeader.rightButton.addTarget(self, action: #selector(MainViewController.forwardOneDay), forControlEvents: .TouchUpInside)
+        dateHeader.rightButton.hidden = shouldHideForwardButton()
+
+    }
+    
+    func saveLine() {
+        let calendar = NSCalendar.currentCalendar()
+        let date = calendar.dateByAddingUnit(.Day, value: dateTracker, toDate: NSDate(), options: [])!
+        let line = self.editView.textField.text!
+        
+        let newEntry = Entry(date: date)
+        newEntry.line = line
+        newEntry.save()
+        
+        var i = 0
+        while i < todaysEntries.count {
+            if convertDateToShortString(todaysEntries[i].date) == convertDateToShortString(newEntry.date) {
+                todaysEntries.removeAtIndex(i)
+            }
+            i += 1
+        }
+        todaysEntries.append(newEntry)
+        lineTable.reloadData()
     }
 
 }

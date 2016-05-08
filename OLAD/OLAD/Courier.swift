@@ -40,6 +40,12 @@ class Courier {
         
     }
     
+    func dateToString(date: NSDate) -> String {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "dd-MM-yyyy"
+        return dateFormatter.stringFromDate(date)
+    }
+    
     private func splitDateToArray(date: NSDate) -> [String] {
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "dd-MM-yyyy"
@@ -52,10 +58,7 @@ class Courier {
         let comparison = splitDateToArray(date)
         var returnEntries = [NSManagedObject]()
         
-        if foundEntries.count < 1 {
-            fetchAllEntries()
-        }
-        
+        fetchAllEntries()
         for entry in foundEntries {
             let thisEntryDate = entry.valueForKey("date") as! NSDate
             let thisEntryDateArray = splitDateToArray(thisEntryDate)
@@ -67,14 +70,36 @@ class Courier {
     }
     
     
+    
     func saveEntryForDate(date:NSDate, line: String) {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         let managedContext = appDelegate.managedObjectContext
+
+        // check if this already exists
+        var fetchedEntries = fetchEntriesForDate(date)
+        for e in fetchedEntries {
+            if dateToString(e.valueForKey("date") as! NSDate) == dateToString(date) {
+                // this is the value that should be updated!
+                e.setValue(line, forKey:"line")
+                
+                do {
+                    try managedContext.save()
+                } catch let error as NSError {
+                    print("Could not save \(error), \(error.userInfo)")
+                }
+                return
+            }
+        }
+        
+        // if it doesnt exist, create it
         let entity = NSEntityDescription.entityForName("Entry", inManagedObjectContext: managedContext)
         let entry = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: managedContext)
         
         entry.setValue(line, forKey: "line")
         entry.setValue(date, forKey: "date")
+        entry.setValue(dateToString(date), forKey: "stringDate")
+    
+        
         
         do {
             try managedContext.save()
@@ -83,8 +108,6 @@ class Courier {
         }
     }
     
-    func editEntryForDate(date:NSDate, line: String) {
-        
-    }
+
     
 }
