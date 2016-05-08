@@ -27,9 +27,9 @@ class Entry {
 
 class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    var dateHeader: UIView!
-    var dateLabel: UILabel!
+    var dateHeader: NavigationView!
     var todaysEntries = [Entry]()
+    var editView: EditView!
     
     var mainColor = UIColor(red: 52/255.0, green: 152/255.0, blue: 219/255.0, alpha: 1.0)
     var secondaryColor = UIColor(red: 218/255.0, green: 234/255.0, blue: 244/255.0, alpha: 1.0)
@@ -49,7 +49,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewDidLoad()
         setupCoreUI()
         buildThisWeek()
-        setElementsByDate(NSDate())
+        setElementsByDate(0)
     }
 
     override func didReceiveMemoryWarning() {
@@ -58,47 +58,58 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     func setupCoreUI() {
         // grab the screen size and set width/height variables
-        var screenSize = UIScreen.mainScreen().bounds
+        let screenSize = UIScreen.mainScreen().bounds
         w = screenSize.width
         h = screenSize.height
         
         view.backgroundColor = secondaryColor
         
         // header
-        dateHeader = UIView(frame: CGRectMake(0,0,w,65))
-        dateHeader.backgroundColor = mainColor
+        dateHeader = NavigationView()
         view.addSubview(dateHeader)
         
-        // date labe
-        dateLabel = UILabel(frame: CGRectMake(0,0,w,65))
-        dateLabel.textColor = UIColor.whiteColor()
-        dateLabel.textAlignment = .Center
-        dateHeader.addSubview(dateLabel)
-        
+        // back and forth buttons
+        dateHeader.leftButton.setImage(UIImage(named: "back_button"), forState: .Normal)
+        dateHeader.leftButton.addTarget(self, action: #selector(MainViewController.backOneDay), forControlEvents: .TouchUpInside)
+        dateHeader.centerButton.addTarget(self, action: #selector(MainViewController.goToToday), forControlEvents: .TouchUpInside)
+        dateHeader.rightButton.setImage(UIImage(named: "forward_button"), forState: .Normal)
+        dateHeader.rightButton.addTarget(self, action: #selector(MainViewController.forwardOneDay), forControlEvents: .TouchUpInside)
+
         // tableview
         lineTable = UITableView(frame: CGRectMake(0,65,w,h-65))
+        lineTable.backgroundColor = secondaryColor
+        lineTable.separatorStyle = .None
         lineTable.dataSource = self
         lineTable.delegate = self
         lineTable.registerClass(LineCell.self, forCellReuseIdentifier: "LineCell")
         view.addSubview(lineTable)
+        
+        // editView
+        editView = EditView(frame: CGRectMake(0,65,w,h-65))
+        view.addSubview(editView)
     }
     
     func buildThisWeek() {
         var i = -7
         let calendar = NSCalendar.currentCalendar()
         while i <= 0 {
-            let dateThisWeek = calendar.dateByAddingUnit(.NSDayCalendarUnit, value: i, toDate: NSDate(), options: [])
+            let dateThisWeek = calendar.dateByAddingUnit(NSCalendarUnit.Day, value: i, toDate: NSDate(), options: [])
             thisWeek.append(dateThisWeek!)
             i += 1
         }
     }
     
-    func setElementsByDate(date: NSDate) {
+    func setElementsByDate(dayNum: Int) {
+        todaysEntries.removeAll()
+        
+        let calendar = NSCalendar.currentCalendar()
+        let date = calendar.dateByAddingUnit(.Day, value: dayNum, toDate: NSDate(), options: [])!
+        
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateStyle = NSDateFormatterStyle.LongStyle
-        var longformDate = dateFormatter.stringFromDate(date)
+        let longformDate = dateFormatter.stringFromDate(date)
         var dateArray = longformDate.componentsSeparatedByString(",")
-        dateLabel.text = dateArray[0]
+        dateHeader.setNavTitle(dateArray[0])
         
         let fetchedEntries = Courier.getCourier().fetchEntriesForDate(date)
         for entry in fetchedEntries {
@@ -115,13 +126,30 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
             if found == false {
                 todaysEntries.append(Entry(date: date))
+                todaysEntries.append(Entry(date: date))
             }
         }
+        
+        lineTable.reloadData()
     }
     
+    private func getYearFromDate(date: NSDate) -> String {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateStyle = NSDateFormatterStyle.LongStyle
+        let longformDate = dateFormatter.stringFromDate(date)
+        let dateArray = longformDate.componentsSeparatedByString(",")
+        return dateArray.last!
+    }
+    
+    private func convertDateToShortString(date:NSDate) -> String{
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "dd-MM-yyyy"
+        return dateFormatter.stringFromDate(date)
+    }
     
     //////////////////////////////////
-    // mark - table view delegate methods
+    //////////////////////////////////
+    // table view delegate methods
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return todaysEntries.count
@@ -131,12 +159,35 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = lineTable.dequeueReusableCellWithIdentifier("LineCell", forIndexPath: indexPath) as? LineCell
         
-        let postWithImage = todaysEntries[indexPath.row]
+        let entry = todaysEntries[indexPath.row]
         if let cell = cell {
-            // do things to the cell
+            cell.clear()
+            cell.parentViewController = self
+            cell.yearLabel.text = getYearFromDate(entry.date)
+            
+            // set the backgroundColor
+            cell.setBackgroundTo(UIColor.whiteColor())
+            if convertDateToShortString(entry.date) == convertDateToShortString(NSDate()) { // i.e., if this is today's update
+                cell.setTodaysCell()
+            }
+            
+            if entry.line == nil {
+                cell.line.text = "Placeholder"
+            } else {
+                cell.line.text = entry.line
+            }
+            
+            if dateTracker > -7 && dateTracker < 1 {
+                cell.editButton.hidden = false
+            }
+            
             return cell
         }
         return cell!
+    }
+    
+    func areSameDate(date1: NSDate, date2: NSDate) {
+        
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -164,8 +215,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let smallHeight: CGFloat = 220.0
-        let expandedHeight: CGFloat = h - 70
+        let smallHeight: CGFloat = (self.h - 65) / 5
+        let expandedHeight: CGFloat = h - 65
         let ip = indexPath
         
         if selectedIndexPath != nil {
@@ -178,7 +229,65 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             return smallHeight
         }
     }
+    
+    //////////////////////////////////
+    //////////////////////////////////
+    // date movement methods
+    
+    func goToToday() {
+        // don't show the animation if you're already in the right spot
+        if dateTracker == 0 {
+            return
+        }
+        UIView.animateWithDuration(0.5) {
+            self.lineTable.alpha = 0.0
+        }
+        dateTracker = 0
+        setElementsByDate(dateTracker)
+        
+        UIView.animateWithDuration(0.5) {
+            self.lineTable.alpha = 1.0
+        }
+    }
 
+
+    func backOneDay() {
+        UIView.animateWithDuration(0.5) { 
+            self.lineTable.alpha = 0.0
+        }
+        dateTracker -= 1
+        setElementsByDate(dateTracker)
+        
+        UIView.animateWithDuration(0.5) {
+            self.lineTable.alpha = 1.0
+        }
+    }
+    
+    func forwardOneDay() {
+        UIView.animateWithDuration(0.5) {
+            self.lineTable.alpha = 0.0
+        }
+        dateTracker += 1
+        setElementsByDate(dateTracker)
+        
+        UIView.animateWithDuration(0.5) {
+            self.lineTable.alpha = 1.0
+        }
+    }
+    
+    func clickedEdit() {
+        editView.show()
+        dateHeader.displayButtons(false, buttons: [dateHeader.leftButton, dateHeader.centerButton])
+        dateHeader.rightButton.setImage(UIImage(named: "close"), forState: .Normal)
+        dateHeader.rightButton.addTarget(self, action: #selector(MainViewController.closeEdit), forControlEvents: .TouchUpInside)
+    }
+    
+    func closeEdit() {
+        editView.hide()
+        dateHeader.displayButtons(true, buttons: [dateHeader.leftButton, dateHeader.centerButton])
+        dateHeader.rightButton.setImage(UIImage(named: "forward_button"), forState: .Normal)
+        dateHeader.rightButton.addTarget(self, action: #selector(MainViewController.forwardOneDay), forControlEvents: .TouchUpInside)
+    }
 
 }
 
