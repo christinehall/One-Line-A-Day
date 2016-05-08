@@ -9,11 +9,12 @@
 import Foundation
 import UIKit
 
-class EditView: UIView {
+class EditView: UIView, UITextViewDelegate {
     
     var w: CGFloat!
     var h: CGFloat!
     var textField: UITextView!
+    var parentViewController: MainViewController!
     
     override init (frame : CGRect) {
         super.init(frame : frame)
@@ -23,7 +24,8 @@ class EditView: UIView {
         
         addUIBlur(UIBlurEffectStyle.Light)
         hidden = true
-        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+
         setupUIElements()
     }
     
@@ -36,6 +38,8 @@ class EditView: UIView {
         textField.font = UIFont(name: "Gotham-Medium", size: 35)
         textField.textColor = UIColor(red: 52/255.0, green: 152/255.0, blue: 219/255.0, alpha: 1.0)
         textField.backgroundColor = UIColor.clearColor()
+        textField.returnKeyType = .Done
+        textField.delegate = self
         addSubview(textField)
     }
     
@@ -58,6 +62,48 @@ class EditView: UIView {
         textField.text = lineText
         textField.becomeFirstResponder()
     }
+    
+    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        if text == "\n" {
+            saveAndClose()
+        }
+        return true
+    }
+    
+    func saveAndClose() {
+        
+        //textField code
+        
+        textField.resignFirstResponder()  //if desired
+        let calendar = NSCalendar.currentCalendar()
+        let date = calendar.dateByAddingUnit(.Day, value: parentViewController.dateTracker, toDate: NSDate(), options: [])!
+        let line = textField.text!
+        
+        let newEntry = Entry(date: date)
+        newEntry.line = line
+        newEntry.save()
+        
+        var i = 0
+        while i < parentViewController.todaysEntries.count {
+            if parentViewController.convertDateToShortString(parentViewController.todaysEntries[i].date) == parentViewController.convertDateToShortString(newEntry.date) {
+                parentViewController.todaysEntries.removeAtIndex(i)
+            }
+            i += 1
+        }
+        parentViewController.todaysEntries.append(newEntry)
+        parentViewController.lineTable.reloadData()
+        self.hide()
+    }
+    
+    
+    func keyboardWillShow(notification:NSNotification) {
+        let userInfo:NSDictionary = notification.userInfo!
+        let keyboardFrame:NSValue = userInfo.valueForKey(UIKeyboardFrameEndUserInfoKey) as! NSValue
+        let keyboardRectangle = keyboardFrame.CGRectValue()
+        let keyboardHeight = keyboardRectangle.height
+        textField.frame = CGRectMake(10,10,w-20,h-keyboardHeight-20)
+    }
+
     
     func hide() {
         alpha = 1.0

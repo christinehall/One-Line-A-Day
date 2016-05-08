@@ -91,6 +91,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         // editView
         editView = EditView(frame: CGRectMake(0,65,w,h-65))
+        editView.parentViewController = self
         view.addSubview(editView)
     }
     
@@ -153,7 +154,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         return dateArray.last!
     }
     
-    private func convertDateToShortString(date:NSDate) -> String{
+    func convertDateToShortString(date:NSDate) -> String{
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "dd-MM-yyyy"
         return dateFormatter.stringFromDate(date)
@@ -225,7 +226,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let smallHeight: CGFloat = (self.h - 65) / 5
+        let smallHeight: CGFloat = (self.h - 65) / 3
         let expandedHeight: CGFloat = h - 65
         let ip = indexPath
         
@@ -296,8 +297,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func closeEdit() {
-        saveLine()
-        
         editView.hide()
         dateHeader.rightButton.removeTarget(nil, action: nil, forControlEvents: .AllEvents)
 
@@ -308,25 +307,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     }
     
-    func saveLine() {
-        let calendar = NSCalendar.currentCalendar()
-        let date = calendar.dateByAddingUnit(.Day, value: dateTracker, toDate: NSDate(), options: [])!
-        let line = self.editView.textField.text!
-        
-        let newEntry = Entry(date: date)
-        newEntry.line = line
-        newEntry.save()
-        
-        var i = 0
-        while i < todaysEntries.count {
-            if convertDateToShortString(todaysEntries[i].date) == convertDateToShortString(newEntry.date) {
-                todaysEntries.removeAtIndex(i)
-            }
-            i += 1
-        }
-        todaysEntries.append(newEntry)
-        lineTable.reloadData()
-    }
-
+    
 }
 

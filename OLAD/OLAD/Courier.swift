@@ -76,7 +76,7 @@ class Courier {
         let managedContext = appDelegate.managedObjectContext
 
         // check if this already exists
-        var fetchedEntries = fetchEntriesForDate(date)
+        let fetchedEntries = fetchEntriesForDate(date)
         for e in fetchedEntries {
             if dateToString(e.valueForKey("date") as! NSDate) == dateToString(date) {
                 // this is the value that should be updated!

@@ -37,7 +37,7 @@ class LineCell: UITableViewCell {
         let screenSize = UIScreen.mainScreen().bounds
         w = screenSize.width
         h = screenSize.height
-        cellHeight = ((h-65)/5)
+        cellHeight = ((h-65)/3)
 
         // create container
         container = UIView(frame: CGRectMake(0, 10, w, cellHeight - 10))
