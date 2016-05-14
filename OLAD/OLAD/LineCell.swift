@@ -29,15 +29,15 @@ class LineCell: UITableViewCell {
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-
         self.backgroundColor = UIColor.clearColor()
         self.selectionStyle = UITableViewCellSelectionStyle.None // no grey highlighting when you select a cell
+        cellHeight = 200
         
         // get screen dimensions
         let screenSize = UIScreen.mainScreen().bounds
         w = screenSize.width
         h = screenSize.height
-        cellHeight = ((h-65)/3)
+        cellHeight = 100 //((h-65)/3)
 
         // create container
         container = UIView(frame: CGRectMake(0, 10, w, cellHeight - 10))
@@ -46,13 +46,13 @@ class LineCell: UITableViewCell {
         self.addSubview(container)
         
         // year label
-        yearLabel = UILabel(frame: CGRectMake(5,10,w-10,30))
+        yearLabel = UILabel(frame: CGRectMake(5,10,w-10,35))
         yearLabel.textColor = UIColor.darkGrayColor()
-        yearLabel.font = UIFont(name: "Gotham-Bold", size: 20)
+        yearLabel.font = UIFont(name: "Gotham-Bold", size: 25)
         yearLabel.textAlignment = .Left
         
-        line = UITextView(frame: CGRectMake(5,35,w-10,50))
-        line.font = UIFont(name: "Gotham-Medium", size: 14)
+        line = UITextView(frame: CGRectMake(5,40,w-10,cellHeight-50))
+        line.font = UIFont(name: "Gotham-Medium", size: 18)
         line.textAlignment = .Left
         line.backgroundColor = UIColor.clearColor()
         line.editable = false
@@ -71,6 +71,13 @@ class LineCell: UITableViewCell {
         }
     }
     
+    func updateCellSize(cellHeight: CGFloat) {
+        container.frame = CGRectMake(0, 10, w, cellHeight - 10)
+        line.frame = CGRectMake(5,40,w-10,cellHeight-50)
+        editButton.frame = CGRectMake(w-50, cellHeight - 40, 40,30)
+    }
+    
+    
     func setBackgroundTo(color: UIColor) {
         container.backgroundColor = color
     }
@@ -83,15 +90,6 @@ class LineCell: UITableViewCell {
         super.awakeFromNib()
     }
     
-    func expand() {
-        
-        print("Expanding")
-    }
-    
-    func collapse(){
-        
-        print("Collapsing")
-    }
     
     func edit() {
         parentViewController.clickedEdit(line.text!)

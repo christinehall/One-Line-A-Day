@@ -25,7 +25,7 @@ class NavigationView: UIView {
         let w = screenSize.width
 
         title = UILabel(frame:CGRectMake(10, 25, w - 20, 30))
-        title.font = UIFont(name: "Gotham-Medium", size: 15)
+        title.font = UIFont(name: "Gotham-Medium", size: 25)
         title.textColor = UIColor.whiteColor()
         title.textAlignment = .Center
         
