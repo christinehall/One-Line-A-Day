@@ -76,7 +76,7 @@ class EditView: UIView, UITextViewDelegate {
         
         textField.resignFirstResponder()  //if desired
         let calendar = NSCalendar.currentCalendar()
-        let date = calendar.dateByAddingUnit(.Day, value: parentViewController.dateTracker, toDate: NSDate(), options: [])!
+        let date = parentViewController.currentDate
         let line = textField.text!
         
         let newEntry = Entry(date: date)

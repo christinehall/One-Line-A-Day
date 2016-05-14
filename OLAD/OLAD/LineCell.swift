@@ -29,15 +29,15 @@ class LineCell: UITableViewCell {
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-
         self.backgroundColor = UIColor.clearColor()
         self.selectionStyle = UITableViewCellSelectionStyle.None // no grey highlighting when you select a cell
+        cellHeight = 200
         
         // get screen dimensions
         let screenSize = UIScreen.mainScreen().bounds
         w = screenSize.width
         h = screenSize.height
-        cellHeight = ((h-65)/3)
+        cellHeight = 100 //((h-65)/3)
 
         // create container
         container = UIView(frame: CGRectMake(0, 10, w, cellHeight - 10))
@@ -71,6 +71,13 @@ class LineCell: UITableViewCell {
         }
     }
     
+    func updateCellSize(cellHeight: CGFloat) {
+        container.frame = CGRectMake(0, 10, w, cellHeight - 10)
+        line.frame = CGRectMake(5,40,w-10,cellHeight-50)
+        editButton.frame = CGRectMake(w-50, cellHeight - 40, 40,30)
+    }
+    
+    
     func setBackgroundTo(color: UIColor) {
         container.backgroundColor = color
     }
@@ -83,15 +90,6 @@ class LineCell: UITableViewCell {
         super.awakeFromNib()
     }
     
-    func expand() {
-        
-        print("Expanding")
-    }
-    
-    func collapse(){
-        
-        print("Collapsing")
-    }
     
     func edit() {
         parentViewController.clickedEdit(line.text!)
