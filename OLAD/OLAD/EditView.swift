@@ -35,7 +35,7 @@ class EditView: UIView, UITextViewDelegate {
     
     func setupUIElements() {
         textField = UITextView(frame: CGRectMake(10,10,w-20,h-20))
-        textField.font = UIFont(name: "Gotham-Medium", size: 35)
+        textField.font = UIFont(name: "BebasNeueBook", size: 35)
         textField.textColor = UIColor(red: 52/255.0, green: 152/255.0, blue: 219/255.0, alpha: 1.0)
         textField.backgroundColor = UIColor.clearColor()
         textField.returnKeyType = .Done
@@ -92,6 +92,7 @@ class EditView: UIView, UITextViewDelegate {
         }
         parentViewController.todaysEntries.append(newEntry)
         parentViewController.lineTable.reloadData()
+        parentViewController.closeEdit()
         self.hide()
     }
     

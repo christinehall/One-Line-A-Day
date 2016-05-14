@@ -22,6 +22,9 @@
 		1E6CA0091CDE91F90023E32C /* Gotham-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1E6CA0051CDE91F90023E32C /* Gotham-Medium.otf */; };
 		1E6CA00C1CDF823B0023E32C /* EditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6CA00B1CDF823B0023E32C /* EditView.swift */; };
 		1E6CA00E1CDF86780023E32C /* NavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6CA00D1CDF86780023E32C /* NavigationView.swift */; };
+		1E803C371CE6FBF20035C8CF /* BebasNeue Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1E803C351CE6FBF20035C8CF /* BebasNeue Bold.otf */; };
+		1E803C381CE6FBF20035C8CF /* BebasNeue Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1E803C361CE6FBF20035C8CF /* BebasNeue Book.otf */; };
+		1E803C3A1CE784E90035C8CF /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E803C391CE784E90035C8CF /* SettingsController.swift */; };
 		EC7A693BCEC4BBB49CA3093C /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D7C9C8F5C312A2511F8E865 /* Pods.framework */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +47,9 @@
 		1E6CA0051CDE91F90023E32C /* Gotham-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gotham-Medium.otf"; sourceTree = "<group>"; };
 		1E6CA00B1CDF823B0023E32C /* EditView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditView.swift; sourceTree = "<group>"; };
 		1E6CA00D1CDF86780023E32C /* NavigationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationView.swift; sourceTree = "<group>"; };
+		1E803C351CE6FBF20035C8CF /* BebasNeue Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BebasNeue Bold.otf"; sourceTree = "<group>"; };
+		1E803C361CE6FBF20035C8CF /* BebasNeue Book.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BebasNeue Book.otf"; sourceTree = "<group>"; };
+		1E803C391CE784E90035C8CF /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		753DF375BAF8E6387D9891B0 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		E554B980BE05A26C701F107A /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -81,13 +87,14 @@
 		1E6C9FE61CDE51DC0023E32C /* OLAD */ = {
 			isa = PBXGroup;
 			children = (
+				1E6C9FE71CDE51DC0023E32C /* AppDelegate.swift */,
 				1E6C9FFC1CDE5CB00023E32C /* Courier.swift */,
-				1E6C9FFE1CDE67760023E32C /* LineCell.swift */,
-				1E6CA00B1CDF823B0023E32C /* EditView.swift */,
 				1E6CA00D1CDF86780023E32C /* NavigationView.swift */,
 				1E6C9FE91CDE51DC0023E32C /* MainViewController.swift */,
+				1E6CA00B1CDF823B0023E32C /* EditView.swift */,
+				1E6C9FFE1CDE67760023E32C /* LineCell.swift */,
+				1E803C391CE784E90035C8CF /* SettingsController.swift */,
 				1E6CA0001CDE6BE40023E32C /* Extensions.swift */,
-				1E6C9FE71CDE51DC0023E32C /* AppDelegate.swift */,
 				1E6C9FEB1CDE51DC0023E32C /* Main.storyboard */,
 				1E6C9FF11CDE51DC0023E32C /* Assets.xcassets */,
 				1E6C9FF31CDE51DC0023E32C /* LaunchScreen.storyboard */,
@@ -101,6 +108,8 @@
 		1E6CA00A1CDE91FF0023E32C /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				1E803C351CE6FBF20035C8CF /* BebasNeue Bold.otf */,
+				1E803C361CE6FBF20035C8CF /* BebasNeue Book.otf */,
 				1E6CA0021CDE91F90023E32C /* Gotham-Bold.otf */,
 				1E6CA0031CDE91F90023E32C /* Gotham-Book.otf */,
 				1E6CA0041CDE91F90023E32C /* Gotham-Light.otf */,
@@ -190,7 +199,9 @@
 				1E6CA0061CDE91F90023E32C /* Gotham-Bold.otf in Resources */,
 				1E6C9FF51CDE51DC0023E32C /* LaunchScreen.storyboard in Resources */,
 				1E6CA0081CDE91F90023E32C /* Gotham-Light.otf in Resources */,
+				1E803C381CE6FBF20035C8CF /* BebasNeue Book.otf in Resources */,
 				1E6CA0091CDE91F90023E32C /* Gotham-Medium.otf in Resources */,
+				1E803C371CE6FBF20035C8CF /* BebasNeue Bold.otf in Resources */,
 				1E6CA0071CDE91F90023E32C /* Gotham-Book.otf in Resources */,
 				1E6C9FF21CDE51DC0023E32C /* Assets.xcassets in Resources */,
 				1E6C9FED1CDE51DC0023E32C /* Main.storyboard in Resources */,
@@ -252,6 +263,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E803C3A1CE784E90035C8CF /* SettingsController.swift in Sources */,
 				1E6C9FEA1CDE51DC0023E32C /* MainViewController.swift in Sources */,
 				1E6CA0011CDE6BE40023E32C /* Extensions.swift in Sources */,
 				1E6CA00E1CDF86780023E32C /* NavigationView.swift in Sources */,

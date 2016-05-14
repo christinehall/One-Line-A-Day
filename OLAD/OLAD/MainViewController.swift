@@ -45,8 +45,9 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     var todaysEntries = [Entry]()
     var editView: EditView!
     
-    var mainColor = UIColor(red: 52/255.0, green: 152/255.0, blue: 219/255.0, alpha: 1.0)
-    var secondaryColor = UIColor(red: 218/255.0, green: 234/255.0, blue: 244/255.0, alpha: 1.0)
+    var mainColor = SettingsController.getController().mainColor
+    var secondaryColor = SettingsController.getController().secondaryColor
+    var highlightColor = SettingsController.getController().highlightColor
     
     var monthTitle: UILabel!
     var currentDate: NSDate!
@@ -72,13 +73,14 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         setElement(currentDate)
         setUpDays()
         setUpCalendarConfiguration()
-
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
 
+
+    
     func setupCoreUI() {
         // grab the screen size and set width/height variables
         let screenSize = UIScreen.mainScreen().bounds
@@ -93,7 +95,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         // month Title
         monthTitle = UILabel(frame:CGRectMake(10, 25, w - 20, 30))
-        monthTitle.font = UIFont(name: "Gotham-Medium", size: 25)
+        monthTitle.font = SettingsController.getController().boldFont
         monthTitle.textAlignment = .Center
         monthTitle.textColor = UIColor.whiteColor()
         monthTitle.text = getDayAndMonthFromDate(currentDate)
@@ -106,6 +108,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         closeButton.addTarget(self, action: #selector(MainViewController.closeEdit), forControlEvents: .TouchUpInside)
         closeButton.hidden = true
         header.addSubview(closeButton)
+        
         
         // tableview
         lineTable = UITableView(frame: CGRectMake(0,150,w,h-150))
@@ -133,7 +136,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func setUpCalendarConfiguration() {
         calendarView.backgroundColor = UIColor.clearColor()
-        calendarView.frame = CGRectMake(0, 35, 200, 65)
+        calendarView.frame = CGRectMake(0, 35, 180, 65)
         calendarView.calendarDelegate = self
         
         calendarView.configuration.periodType = .OneWeek
@@ -144,13 +147,13 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         calendarView.configuration.selectedDayTextColor = UIColor.whiteColor()
         calendarView.configuration.selectedDayBackgroundColor = mainColor
         
-        calendarView.configuration.weekLabelTextColor = UIColor(hexString: "6f787c")
+        calendarView.configuration.weekLabelTextColor = SettingsController.getController().highlightColor
         
         calendarView.configuration.startDayType = .Sunday
-        calendarView.configuration.dayTextFont = UIFont(name: "Gotham-Medium", size: 12)!
-        calendarView.configuration.weekLabelFont = UIFont(name: "Gotham-Medium", size: 12)!
-        calendarView.configuration.dayViewSize = CGSizeMake(28, 28)
-        calendarView.configuration.rowHeight = 30
+        calendarView.configuration.dayTextFont = SettingsController.getController().dateNumberFont
+        calendarView.configuration.weekLabelFont = SettingsController.getController().regFont
+        calendarView.configuration.dayViewSize = CGSizeMake(48, 48)
+        calendarView.configuration.rowHeight = 50
         calendarView.configuration.weekLabelHeight = 25
 
         calendarView.reloadView()
@@ -162,7 +165,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             let day = dateByIndex(i)
             let thisDay = Courier.getCourier().fetchEntriesForDate(day)
             if thisDay.count > 0 {                
-                let dayColors = DayColors(backgroundColor: UIColor.redColor(), textColor: UIColor.whiteColor())
+                let dayColors = DayColors(backgroundColor: SettingsController.getController().highlightColor, textColor: UIColor.whiteColor())
                 self.dayColors[convertDateToShortString(thisDay[0].valueForKey("date") as! NSDate)] = dayColors
             }
         }

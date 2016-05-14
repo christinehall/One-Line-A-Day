@@ -25,7 +25,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="CHd-TO-LMo" firstAttribute="top" secondItem="I78-7S-1Ma" secondAttribute="bottom" constant="8" symbolic="YES" id="h4J-CH-Zva"/>
-                            <constraint firstItem="I78-7S-1Ma" firstAttribute="top" secondItem="U0Y-dH-pGp" secondAttribute="bottom" constant="65" id="i21-X2-khA"/>
+                            <constraint firstItem="I78-7S-1Ma" firstAttribute="top" secondItem="U0Y-dH-pGp" secondAttribute="bottom" constant="50" id="i21-X2-khA"/>
                             <constraint firstItem="I78-7S-1Ma" firstAttribute="leading" secondItem="dYM-L2-nxL" secondAttribute="leadingMargin" id="ib6-2T-a7Y"/>
                             <constraint firstAttribute="trailingMargin" secondItem="I78-7S-1Ma" secondAttribute="trailing" id="qim-er-ham"/>
                         </constraints>

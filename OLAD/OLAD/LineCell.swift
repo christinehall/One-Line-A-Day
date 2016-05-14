@@ -48,11 +48,11 @@ class LineCell: UITableViewCell {
         // year label
         yearLabel = UILabel(frame: CGRectMake(5,10,w-10,35))
         yearLabel.textColor = UIColor.darkGrayColor()
-        yearLabel.font = UIFont(name: "Gotham-Bold", size: 25)
+        yearLabel.font = SettingsController.getController().boldFont
         yearLabel.textAlignment = .Left
         
         line = UITextView(frame: CGRectMake(5,40,w-10,cellHeight-50))
-        line.font = UIFont(name: "Gotham-Medium", size: 18)
+        line.font = SettingsController.getController().regFont
         line.textAlignment = .Left
         line.backgroundColor = UIColor.clearColor()
         line.editable = false
