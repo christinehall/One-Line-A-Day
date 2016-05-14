@@ -9,7 +9,11 @@
 import Foundation
 import UIKit
 
-class SettingsController {
+class SettingsController: NSObject {
+
+    // arrays should be: main, secondary, contrast
+    var tealAndDarkBlue = ["28b7d8 ", "f2f7f9", "242947"]
+    var originalColors = ["3498DB", "DAEAF4", "0161A2"]
     
     // fonts
     var boldFont =  UIFont(name: "BebasNeueBold", size: 30)!
@@ -19,10 +23,10 @@ class SettingsController {
     var buttonFont = UIFont(name: "BebasNeueBold", size: 20)!
     
     // colors
-    var mainColor = UIColor(hexString: "3498DB")
-    var secondaryColor = UIColor(hexString: "DAEAF4")
-    var highlightColor = UIColor(hexString: "0161A2")
-    var contrastColor = UIColor(hexString: "FFFFFF")
+    var mainColor: UIColor!
+    var secondaryColor: UIColor!
+    var highlightColor: UIColor!
+    var contrastColor: UIColor!
     
     private class var sharedInstance: SettingsController {
         struct Static {
@@ -33,5 +37,17 @@ class SettingsController {
     
     class func getController() -> SettingsController {
         return sharedInstance
+    }
+    
+    override init() {
+        super.init()
+        
+        var colors = tealAndDarkBlue
+        
+        mainColor = UIColor(hexString: colors[0])
+        secondaryColor = UIColor(hexString: colors[1])
+        highlightColor = UIColor(hexString: colors[2])
+        contrastColor = UIColor(hexString: "FFFFFF")
+
     }
 }

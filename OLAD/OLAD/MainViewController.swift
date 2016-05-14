@@ -152,7 +152,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         calendarView.configuration.dayTextColor = mainColor
         calendarView.configuration.dayBackgroundColor = UIColor.clearColor()
         calendarView.configuration.selectedDayTextColor = UIColor.whiteColor()
-        calendarView.configuration.selectedDayBackgroundColor = mainColor
+        calendarView.configuration.selectedDayBackgroundColor = SettingsController.getController().highlightColor
         
         calendarView.configuration.weekLabelTextColor = SettingsController.getController().highlightColor
         
@@ -172,7 +172,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             let day = dateByIndex(i)
             let thisDay = Courier.getCourier().fetchEntriesForDate(day)
             if thisDay.count > 0 {                
-                let dayColors = DayColors(backgroundColor: SettingsController.getController().highlightColor, textColor: UIColor.whiteColor())
+                let dayColors = DayColors(backgroundColor: SettingsController.getController().mainColor, textColor: UIColor.whiteColor())
                 self.dayColors[convertDateToShortString(thisDay[0].valueForKey("date") as! NSDate)] = dayColors
             }
         }

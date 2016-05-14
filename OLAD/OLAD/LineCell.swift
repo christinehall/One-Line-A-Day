@@ -99,11 +99,11 @@ class LineCell: UITableViewCell {
         container.backgroundColor = UIColor.whiteColor()
         yearLabel.textColor = UIColor.darkGrayColor()
         line.textColor = UIColor.darkGrayColor()
-        editButton.setTitleColor(UIColor(red: 52/255.0, green: 152/255.0, blue: 219/255.0, alpha: 1.0), forState: .Normal)
+        editButton.setTitleColor(SettingsController.getController().secondaryColor, forState: .Normal)
     }
     
     func setTodaysCell() {
-        container.backgroundColor = UIColor(red: 52/255.0, green: 152/255.0, blue: 219/255.0, alpha: 1.0)
+        container.backgroundColor = SettingsController.getController().highlightColor
         yearLabel.textColor = UIColor.whiteColor()
         line.textColor = UIColor.whiteColor()
         editButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
