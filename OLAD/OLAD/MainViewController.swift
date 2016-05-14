@@ -59,7 +59,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     var w: CGFloat!
     var h: CGFloat!
     
-    var selectedIndexPath: NSIndexPath!
     
     var thisWeek = [NSDate]()
     
@@ -88,18 +87,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         h = screenSize.height
         
         view.backgroundColor = secondaryColor
-        
-        // header
-//        dateHeader = NavigationView()
-//        view.addSubview(dateHeader)
-        
-        // back and forth buttons
-//        dateHeader.leftButton.setImage(UIImage(named: "back_button"), forState: .Normal)
-//        dateHeader.leftButton.addTarget(self, action: #selector(MainViewController.backOneDay), forControlEvents: .TouchUpInside)
-//        dateHeader.centerButton.addTarget(self, action: #selector(MainViewController.goToToday), forControlEvents: .TouchUpInside)
-//        dateHeader.rightButton.setImage(UIImage(named: "forward_button"), forState: .Normal)
-//        dateHeader.rightButton.addTarget(self, action: #selector(MainViewController.forwardOneDay), forControlEvents: .TouchUpInside)
-//        dateHeader.rightButton.hidden = shouldHideForwardButton()
         
         var header = UIView(frame: CGRectMake(0,0,w,65))
         header.backgroundColor = mainColor
@@ -327,21 +314,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         let cell = tableView.cellForRowAtIndexPath(indexPath) as! LineCell
-//        switch selectedIndexPath {
-//        case nil: // first time something is clicked
-//            selectedIndexPath = indexPath
-//            cell.expand()
-//        default: // another cell has been previously selected
-//            if selectedIndexPath! == indexPath {
-//                selectedIndexPath = nil // close it up!
-//                cell.collapse()
-//            } else {
-//                selectedIndexPath = indexPath
-//                let newCell = tableView.cellForRowAtIndexPath(selectedIndexPath!) as! LineCell
-//                cell.expand()
-//                newCell.collapse()
-//            }
-//        }
         tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
     }
     
@@ -354,49 +326,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     //////////////////////////////////
     //////////////////////////////////
-    // date movement methods
     
-//    func goToToday() {
-//        // don't show the animation if you're already in the right spot
-//        if dateTracker == 0 {
-//            return
-//        }
-//        UIView.animateWithDuration(0.5) {
-//            self.lineTable.alpha = 0.0
-//        }
-//        dateTracker = 0
-//        setElementsByDate(dateTracker)
-//        dateHeader.rightButton.hidden = shouldHideForwardButton()
-//        UIView.animateWithDuration(0.5) {
-//            self.lineTable.alpha = 1.0
-//        }
-//    }
-//
-//
-//    func backOneDay() {
-//        UIView.animateWithDuration(0.5) { 
-//            self.lineTable.alpha = 0.0
-//        }
-//        dateTracker -= 1
-//        setElementsByDate(dateTracker)
-//        dateHeader.rightButton.hidden = shouldHideForwardButton()
-//        UIView.animateWithDuration(0.5) {
-//            self.lineTable.alpha = 1.0
-//        }
-//    }
-//    
-//    func forwardOneDay() {
-//        UIView.animateWithDuration(0.5) {
-//            self.lineTable.alpha = 0.0
-//        }
-//        dateTracker += 1
-//        setElementsByDate(dateTracker)
-//        dateHeader.rightButton.hidden = shouldHideForwardButton()
-//        UIView.animateWithDuration(0.5) {
-//            self.lineTable.alpha = 1.0
-//        }
-//    }
-//    
     func clickedEdit(lineText: String) {
         editView.show(lineText)
         closeButton.hidden = false
