@@ -38,9 +38,8 @@ struct DayColors {
 
 class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MJCalendarViewDelegate {
     
-    var dayColors = Dictionary<NSDate, DayColors>()
+    var dayColors = Dictionary<String, DayColors>()
     @IBOutlet weak var calendarView: MJCalendarView!
-    let daysRange = 365
 
     var dateHeader: NavigationView!
     var todaysEntries = [Entry]()
@@ -157,14 +156,22 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         calendarView.reloadView()
     }
     
-    func setTitleWithDate(date: NSDate) {
-//        self.dateFormatter.dateFormat = "MMMM yy"
-//        self.navigationItem.title = self.dateFormatter.stringFromDate(date)
-    }
     
     func setUpDays() {
-        
+        for i in 0...365 {
+            let day = dateByIndex(i)
+            let thisDay = Courier.getCourier().fetchEntriesForDate(day)
+            if thisDay.count > 0 {                
+                let dayColors = DayColors(backgroundColor: UIColor.redColor(), textColor: UIColor.whiteColor())
+                self.dayColors[convertDateToShortString(thisDay[0].valueForKey("date") as! NSDate)] = dayColors
+            }
+        }
     }
+    
+    func dateByIndex(index: Int) -> NSDate {
+        return NSDate().dateBySubtractingDays(index)
+    }
+
     
     //////////////////////////////////
     //////////////////////////////////
@@ -175,11 +182,15 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func calendar(calendarView: MJCalendarView, backgroundForDate date: NSDate) -> UIColor? {
-        return self.dayColors[date]?.backgroundColor
+        print(date)
+        if self.dayColors[convertDateToShortString(date)]?.backgroundColor != nil {
+            print("######")
+        }
+        return self.dayColors[convertDateToShortString(date)]?.backgroundColor
     }
     
     func calendar(calendarView: MJCalendarView, textColorForDate date: NSDate) -> UIColor? {
-        return self.dayColors[date]?.textColor
+        return self.dayColors[convertDateToShortString(date)]?.textColor
     }
     
     func calendar(calendarView: MJCalendarView, didSelectDate date: NSDate) {
