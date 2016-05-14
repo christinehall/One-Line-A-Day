@@ -67,6 +67,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         calendar = NSCalendar.currentCalendar()
         currentDate = NSDate()
+        
+        UIApplication.sharedApplication().statusBarStyle = .LightContent
 
         setupCoreUI()
         buildThisWeek()
@@ -79,6 +81,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.didReceiveMemoryWarning()
     }
 
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        UIApplication.sharedApplication().statusBarStyle = .Default
+
+    }
 
     
     func setupCoreUI() {
@@ -185,9 +192,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func calendar(calendarView: MJCalendarView, backgroundForDate date: NSDate) -> UIColor? {
-        print(date)
         if self.dayColors[convertDateToShortString(date)]?.backgroundColor != nil {
-            print("######")
         }
         return self.dayColors[convertDateToShortString(date)]?.backgroundColor
     }
@@ -205,6 +210,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         var i = -7
         while i <= 0 {
             let dateThisWeek = calendar.dateByAddingUnit(NSCalendarUnit.Day, value: i, toDate: NSDate(), options: [])
+            print("Adding \(dateThisWeek) to this week's dates!")
             thisWeek.append(dateThisWeek!)
             i += 1
         }
@@ -232,7 +238,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
         let dateTracker = NSDate().daysFrom(date)
-        if dateTracker > -8 && dateTracker < 1 {
+        if dateTracker < 8 && dateTracker > 0 {
             var found = false
             for entry in todaysEntries {
                 if entry.date.isBetween(date: thisWeek.first!, andDate: thisWeek.last!) {
@@ -301,7 +307,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell.parentViewController = self
             cell.yearLabel.text = getYearFromDate(entry.date)
             
-            
             if convertDateToShortString(entry.date) == convertDateToShortString(NSDate()) { // i.e., if this is today's update
                 cell.setTodaysCell()
             } else {
@@ -309,13 +314,13 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
             
             if entry.line == nil {
-                cell.line.text = "Placeholder"
+                cell.showPlaceholder()
             } else {
                 cell.line.text = entry.line
             }
             
             let dateTracker = NSDate().daysFrom(currentDate)
-            if dateTracker > -7 && dateTracker < 1 {
+            if dateTracker < 8 && dateTracker > -1 {
                 cell.editButton.hidden = false
             }
             

@@ -59,7 +59,7 @@ class LineCell: UITableViewCell {
         
         editButton = UIButton(frame:CGRectMake(w-50, cellHeight - 40, 40,30))
         editButton.setTitle("Edit", forState: .Normal)
-        editButton.titleLabel!.font = UIFont(name: "Gotham-Light", size: 13)
+        editButton.titleLabel!.font = SettingsController.getController().buttonFont
         editButton.alpha = 0.8
         editButton.addTarget(self, action: #selector(LineCell.edit), forControlEvents: .TouchUpInside)
         editButton.hidden = true
@@ -116,5 +116,9 @@ class LineCell: UITableViewCell {
         yearLabel.text = ""
         line.text = ""
         editButton.hidden = true
+    }
+    
+    func showPlaceholder() {
+        
     }
 }

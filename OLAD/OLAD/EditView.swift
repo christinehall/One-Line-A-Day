@@ -35,8 +35,8 @@ class EditView: UIView, UITextViewDelegate {
     
     func setupUIElements() {
         textField = UITextView(frame: CGRectMake(10,10,w-20,h-20))
-        textField.font = UIFont(name: "BebasNeueBook", size: 35)
-        textField.textColor = UIColor(red: 52/255.0, green: 152/255.0, blue: 219/255.0, alpha: 1.0)
+        textField.font = SettingsController.getController().writingFont
+        textField.textColor = SettingsController.getController().highlightColor
         textField.backgroundColor = UIColor.clearColor()
         textField.returnKeyType = .Done
         textField.delegate = self
