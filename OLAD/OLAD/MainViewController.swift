@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import MJCalendar
 
 class Entry {
     
@@ -29,8 +30,18 @@ class Entry {
     
 }
 
-class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+struct DayColors {
+    var backgroundColor: UIColor
+    var textColor: UIColor
+}
+
+
+class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MJCalendarViewDelegate {
     
+    var dayColors = Dictionary<NSDate, DayColors>()
+    @IBOutlet weak var calendarView: MJCalendarView!
+    let daysRange = 365
+
     var dateHeader: NavigationView!
     var todaysEntries = [Entry]()
     var editView: EditView!
@@ -54,6 +65,9 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         setupCoreUI()
         buildThisWeek()
         setElementsByDate(0)
+        setUpDays()
+        setUpCalendarConfiguration()
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -70,7 +84,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         // header
         dateHeader = NavigationView()
-        view.addSubview(dateHeader)
+//        view.addSubview(dateHeader)
         
         // back and forth buttons
         dateHeader.leftButton.setImage(UIImage(named: "back_button"), forState: .Normal)
@@ -89,11 +103,110 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         lineTable.registerClass(LineCell.self, forCellReuseIdentifier: "LineCell")
         view.addSubview(lineTable)
         
+        var calendarView = MJCalendarView()
+        calendarView.configuration.periodType = .OneWeek
+        calendarView.configuration.dayViewType = .Circle
+        calendarView.reloadView()
+        view.addSubview(calendarView)
+        
         // editView
         editView = EditView(frame: CGRectMake(0,65,w,h-65))
         editView.parentViewController = self
         view.addSubview(editView)
+        view.bringSubviewToFront(calendarView)
     }
+    
+    
+    func setUpCalendarConfiguration() {
+        calendarView.backgroundColor = UIColor.clearColor()
+        calendarView.frame = CGRectMake(0, 35, w, 55)
+        calendarView.calendarDelegate = self
+        
+        // Set displayed period type. Available types: Month, ThreeWeeks, TwoWeeks, OneWeek
+        calendarView.configuration.periodType = .OneWeek
+        
+        // Set shape of day view. Available types: Circle, Square
+        calendarView.configuration.dayViewType = .Circle
+        
+        // Set selected day display type. Available types:
+        // Border - Only border is colored with selected day color
+        // Filled - Entire day view is filled with selected day color
+        calendarView.configuration.selectedDayType = .Filled
+        
+        // Set width of selected day border. Relevant only if selectedDayType = .Border
+        calendarView.configuration.selectedBorderWidth = 1
+        
+        // Set day text color
+        calendarView.configuration.dayTextColor = UIColor(hexString: "3498DB")
+        
+        // Set day background color
+        calendarView.configuration.dayBackgroundColor = UIColor.clearColor()
+        
+        // Set selected day text color
+        calendarView.configuration.selectedDayTextColor = UIColor.whiteColor()
+        
+        // Set selected day background color
+        calendarView.configuration.selectedDayBackgroundColor = UIColor(hexString: "3498DB")
+        
+        // Set other month day text color. Relevant only if periodType = .Month
+        calendarView.configuration.otherMonthTextColor = UIColor(hexString: "6f787c")
+        
+        // Set other month background color. Relevant only if periodType = .Month
+        calendarView.configuration.otherMonthBackgroundColor = UIColor(hexString: "E7E7E7")
+        
+        // Set week text color
+        calendarView.configuration.weekLabelTextColor = UIColor(hexString: "6f787c")
+        
+        // Set start day. Available type: .Monday, Sunday
+        calendarView.configuration.startDayType = .Sunday
+        
+        // Set day text font
+        calendarView.configuration.dayTextFont = UIFont.systemFontOfSize(12)
+        
+        //Set week's day name font
+        calendarView.configuration.weekLabelFont = UIFont.systemFontOfSize(12)
+        
+        //Set day view size. It includes border width if selectedDayType = .Border
+        calendarView.configuration.dayViewSize = CGSizeMake(24, 24)
+        
+        //Set height of row with week's days
+        calendarView.configuration.rowHeight = 30
+        
+        // Set height of week's days names view
+        calendarView.configuration.weekLabelHeight = 25
+        
+        // To commit all configuration changes execute reloadView method
+        calendarView.reloadView()
+    }
+    
+    func setTitleWithDate(date: NSDate) {
+//        self.dateFormatter.dateFormat = "MMMM yy"
+//        self.navigationItem.title = self.dateFormatter.stringFromDate(date)
+    }
+    
+    func setUpDays() {
+        
+    }
+    
+    //MARK: MJCalendarViewDelegate
+    func calendar(calendarView: MJCalendarView, didChangePeriod periodDate: NSDate, bySwipe: Bool) {
+        print(periodDate)
+    }
+    
+    func calendar(calendarView: MJCalendarView, backgroundForDate date: NSDate) -> UIColor? {
+        return self.dayColors[date]?.backgroundColor
+    }
+    
+    func calendar(calendarView: MJCalendarView, textColorForDate date: NSDate) -> UIColor? {
+        return self.dayColors[date]?.textColor
+    }
+    
+    func calendar(calendarView: MJCalendarView, didSelectDate date: NSDate) {
+        setElement(date)
+    }
+    
+    
+    
     
     func buildThisWeek() {
         var i = -7
@@ -111,6 +224,39 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         return false
     }
+    
+    
+    func setElement(date:NSDate) {
+        todaysEntries.removeAll()
+        
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateStyle = NSDateFormatterStyle.LongStyle
+        let longformDate = dateFormatter.stringFromDate(date)
+        var dateArray = longformDate.componentsSeparatedByString(",")
+        dateHeader.setNavTitle(dateArray[0])
+        
+        let fetchedEntries = Courier.getCourier().fetchEntriesForDate(date)
+        for entry in fetchedEntries {
+            let entryObj = Entry(obj: entry)
+            todaysEntries.append(entryObj)
+        }
+        
+        
+        if dateTracker > -8 && dateTracker < 1 {
+            var found = false
+            for entry in todaysEntries {
+                if entry.date.isBetween(date: thisWeek.first!, andDate: thisWeek.last!) {
+                    found = true
+                }
+            }
+            if found == false {
+                todaysEntries.append(Entry(date: date))
+            }
+        }
+        
+        lineTable.reloadData()
+    }
+
     
     func setElementsByDate(dayNum: Int) {
         todaysEntries.removeAll()
